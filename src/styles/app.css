@@ -13,7 +13,6 @@
 
 /* Sidebar styles */
 .SidebarContainer {
-    height: 85vh;
     width: calc(30% - 20px);
     float: left;
     display: flex;
@@ -21,6 +20,7 @@
     align-items: start;
     flex-direction: column;
     padding-left: 20px;
+    padding-top: 10px;
     background-color: rgb(211, 211, 211);
 }
 
@@ -34,7 +34,7 @@
 }
 
 .container{
-    margin-top: 56pxpx;
+    margin-top: 20px;
 }
 
 .sidebar-input{
