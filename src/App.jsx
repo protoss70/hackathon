@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
+import { getSolarData } from './api'
 
 const MapComponent = ({ apiKey, center }) => {
   return (
@@ -39,16 +40,21 @@ const Sidebar = ({ onAddressChange }) => {
     }
   }, [])
 
-  const handlePlaceSelect = () => {
+  const handlePlaceSelect = async () => {
     const place = autocompleteRef.current.getPlace()
     if (place && place.geometry) {
       const location = place.geometry.location
+      const lat = location.lat()
+      const lng = location.lng()
       const latLng = {
-        lat: location.lat(),
-        lng: location.lng()
+        lat,
+        lng
       }
       setAddress(place.formatted_address)
       onAddressChange(latLng)
+      const data = await getSolarData(lat, lng)
+      setSunshineHours(data.maxSunshineHoursPerYear)
+      setMaxArrayAreaMeters2(data.setMaxArrayAreaMeters2)
     }
   }
   const [expectedProduced, setExpectedProduced] = useState(3169)
@@ -57,6 +63,7 @@ const Sidebar = ({ onAddressChange }) => {
   const [savings, setSavings] = useState(3169)
   const [ROI, setROI] = useState(3169)
   const [sunshineHours, setSunshineHours] = useState(3169)
+  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState(3169)
 
   const handleAddressChange = async (event) => {
     const newAddress = event.target.value
@@ -99,15 +106,27 @@ const Sidebar = ({ onAddressChange }) => {
       </div>
       <div className='SidebarItem secondary'>
         <h2>General Information</h2>
-        <div className='sideBar-content-item'>Sunshine hours/year: <span>{sunshineHours}</span></div>
-        <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span>&nbsp;&nbsp;:<span>{expectedConsumed}</span></div>
-        <div className='sideBar-content-item'>Cost: <span>{expectedCost}</span></div>
+        <div className='sideBar-content-item'>
+          Sunshine hours/year: <span>{sunshineHours}</span>
+        </div>
+        <div className='meter-container sideBar-content-item'>
+          Area meters<span className='meter-square'>2&nbsp;</span>&nbsp;&nbsp;:<span>{maxArrayAreaMeters2}</span>
+        </div>
+        <div className='sideBar-content-item'>
+          Cost: <span>{expectedCost}</span>
+        </div>
       </div>
       <div className='SidebarItem secondary'>
         <h2>Expected</h2>
-        <div className='sideBar-content-item'>Produced: <span>{expectedProduced}</span></div>
-        <div className='sideBar-content-item'>Consumed: <span>{expectedConsumed}</span></div>
-        <div className='sideBar-content-item'>Cost: <span>{expectedCost}</span></div>
+        <div className='sideBar-content-item'>
+          Produced: <span>{expectedProduced}</span>
+        </div>
+        <div className='sideBar-content-item'>
+          Consumed: <span>{expectedConsumed}</span>
+        </div>
+        <div className='sideBar-content-item'>
+          Cost: <span>{expectedCost}</span>
+        </div>
       </div>
       <div className='SidebarItem secondary'>
         <h2>Savings:</h2>
@@ -143,4 +162,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
