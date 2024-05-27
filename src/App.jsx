@@ -4,6 +4,10 @@ import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
 import { getDataLayer, getDataLayers, getSolarData } from './api'
+import sunImage from './assets/sun.svg';
+import solarImage from "./assets/solar.svg"
+import areaImage from "./assets/area.svg"
+import costImage from "./assets/cost.svg"
 
 const MapComponent = ({ apiKey, center }) => {
   return (
@@ -69,6 +73,10 @@ const Sidebar = ({ onAddressChange }) => {
   const [sunshineHours, setSunshineHours] = useState(3169)
   const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState(3169)
 
+  useEffect(() => {
+    console.log(maxArrayAreaMeters2)
+  }, [maxArrayAreaMeters2])
+
   const handleAddressChange = async (event) => {
     const newAddress = event.target.value
     setAddress(newAddress)
@@ -110,14 +118,26 @@ const Sidebar = ({ onAddressChange }) => {
       </div>
       <div className='SidebarItem secondary'>
         <h2>General Information</h2>
-        <div className='sideBar-content-item'>
-          Sunshine hours/year: <span>{sunshineHours}</span>
+        <div className='item-container'>
+          <div className='item-label-container'>
+            <img className='item-svg' src={sunImage}  style={{ marginLeft: '-2px' }}></img>
+            <div className='sideBar-content-item'>Sunshine hours/year:</div>
+          </div>
+          <div>{sunshineHours}</div>
         </div>
-        <div className='meter-container sideBar-content-item'>
-          Area meters<span className='meter-square'>2&nbsp;</span>&nbsp;&nbsp;:<span>{maxArrayAreaMeters2}</span>
+        <div className='item-container'>
+          <div className='item-label-container'>
+            <img className='item-svg' src={areaImage}></img>
+            <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span></div>
+          </div>
+          <div>{maxArrayAreaMeters2}</div>
         </div>
-        <div className='sideBar-content-item'>
-          Cost: <span>{expectedCost}</span>
+        <div className='item-container'>
+          <div className='item-label-container'>
+            <img className='item-svg' src={costImage} style={{ width: '18px' }}></img>
+            <div className='meter-container sideBar-content-item'>Cost</div>
+          </div>
+          <div>{expectedCost}</div>
         </div>
       </div>
       <div className='SidebarItem secondary'>

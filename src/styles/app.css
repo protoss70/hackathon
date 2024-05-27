@@ -24,6 +24,12 @@
     background-color: rgb(211, 211, 211);
 }
 
+.item-container{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+}
+
 /* Sidebar item styles */
 .SidebarItem {
     margin-bottom: 10px;
@@ -55,4 +61,14 @@
 .sideBar-content-item{
     display: flex;
     justify-content: space-between;
+}
+
+.item-label-container{
+    display: flex;
+    justify-content: start;
+    gap: 8px;
+}
+
+.item-svg{
+    width: 25px;
 }
