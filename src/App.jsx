@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
-import { getDataLayer, getDataLayers, getSolarData } from './api'
 import sunImage from './assets/sun.svg';
 import solarImage from "./assets/solar.svg"
 import areaImage from "./assets/area.svg"
@@ -19,6 +18,18 @@ import airConditionerImage from './assets/air-conditioner.svg';
 import peopleImage from './assets/people.svg';
 import batteryImage from './assets/battery.svg';
 import poolImage from './assets/pool.svg';
+import {
+  HouseSize,
+  calculatePanelCount,
+  calculateTotalConsumption,
+  getCurrentMonthlyPaymentAndTotalCostWithoutChange,
+  getTotalCostAfterSolar,
+  getDataLayer,
+  getDataLayers,
+  getSolarData,
+  getInstallation,
+  getROI
+} from './api'
 
 const MapComponent = ({ apiKey, center }) => {
   return (
@@ -76,8 +87,34 @@ const Sidebar = ({ onAddressChange }) => {
       // const res = await getDataLayer(dataLayers.rgbUrl)
 
       // const panelCount = solarData.maxArrayPanelsCount
-      // const panels = solarData.solarPanelConfigs
+      const panels = solarData.solarPanelConfigs
       // const panelCapacityWatts = solarData.panelCapacityWatts
+
+      // Example of usage:
+      const battery = false
+      const energyPrize = 5
+      const totalConsumption = calculateTotalConsumption({ people: 1, ev: 1, sauna: 0, pool: 1, houseSize: HouseSize.MEDIUM, hotTub: 1 })
+      const { currentMonthlyPayment, totalCostWithoutChange } = getCurrentMonthlyPaymentAndTotalCostWithoutChange(
+        energyPrize,
+        totalConsumption
+      )
+      const { panelCount, yearlyEnergyDcKwh } = calculatePanelCount(battery, totalConsumption, panels)
+      const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, battery)
+      const totalCostAfterSolar = getTotalCostAfterSolar(yearlyEnergyDcKwh, energyPrize, totalConsumption)
+      const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment)
+
+      console.log({
+        totalConsumption,
+        currentMonthlyPayment,
+        totalCostWithoutChange,
+        panelCount,
+        yearlyEnergyDcKwh,
+        kwpSolar,
+        kwhBattery,
+        installationCost,
+        totalCostAfterSolar,
+        roi
+      })
     }
   }
   const [expectedProduced, setExpectedProduced] = useState("-")
