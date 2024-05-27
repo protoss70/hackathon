@@ -1,35 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./styles/app.css";
+import PropTypes from 'prop-types';
+import GoogleMapReact from 'google-map-react';
+import { Autocomplete } from 'google-map-react';
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const MapComponent = ({ apiKey }) => {
+  return (
+    <div className="MapComponentContainer">
+      <GoogleMapReact
+        bootstrapURLKeys={{ key: apiKey }}
+        defaultCenter={{ lat: 59.95, lng: 30.33 }}
+        defaultZoom={11}
+        onClick={(e) => {console.log(e)}}
+      >
+        {/* Add any markers or overlays here */}
+      </GoogleMapReact>
+    </div>
+  );
+};
+
+MapComponent.propTypes = {
+  apiKey: PropTypes.string.isRequired,
+};
+
+const Sidebar = () => {
+  const [address, setAddress] = useState('');
+
+  const onPlaceChanged = (place) => {
+    setAddress(place.formatted_address);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="SidebarContainer">
+      <div className="SidebarItem">
+        <h2>Address</h2>
+        <Autocomplete
+          style={{ width: '100%' }}
+          onPlaceChanged={onPlaceChanged}
+          types={['geocode']}
+          placeholder="Enter your address"
+        />
+        <textarea
+          name="address"
+          id="address"
+          className="sidebar-input"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Enter your address"
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="SidebarItem">
+        <h2>Expected Produces</h2>
+        {/* Add expected produced energy details here */}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      {/* Add other sidebar items with appropriate classNames */}
+    </div>
+  );
+};
 
-export default App
+const App = () => {
+  const apiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
+
+  return (
+    <div className="container">
+      <MapComponent apiKey={apiKey} />
+      <Sidebar />
+    </div>
+  );
+};
+
+export default App;
