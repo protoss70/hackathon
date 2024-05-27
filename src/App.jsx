@@ -56,8 +56,37 @@ MapComponent.propTypes = {
   }).isRequired
 }
 
-const Sidebar = ({ onAddressChange }) => {
-  const [address, setAddress] = useState('Nám. J. Palacha 1, 110 00 Staré Město')
+const Sidebar = ({ onAddressChange, states }) => {
+
+  const {
+    expectedProduced,
+    setExpectedProduced,
+    expectedConsumed,
+    setExpectedConsumed,
+    expectedCost,
+    setExpectedCost,
+    savings,
+    setSavings,
+    address,
+    setAddress,
+    maxSolarPanels,
+    setMaxSolarPanels,
+    maxArrayAreaMeters2,
+    setMaxArrayAreaMeters2,
+    ROI,
+    setROI,
+    sunshineHours,
+    setSunshineHours,
+    house,
+    setHouse,
+    energyPrize,
+    sauna,
+    ev,
+    hotTub,
+    pool,
+    people,
+  } = states;
+  
   const autocompleteRef = useRef(null)
 
   useEffect(() => {
@@ -66,8 +95,22 @@ const Sidebar = ({ onAddressChange }) => {
     }
   }, [])
 
+  const removeSecondary = () => {
+    // Get all elements with the class 'secondary'
+    const elements = document.getElementsByClassName('secondary');
+
+    // Convert the HTMLCollection to an array to safely modify the class list
+    const elementsArray = Array.from(elements);
+
+    // Loop through each element and remove the 'secondary' class
+    elementsArray.forEach(element => {
+      element.classList.remove('secondary');
+    });
+  }
+
   const handlePlaceSelect = async () => {
     const place = autocompleteRef.current.getPlace()
+    removeSecondary();
     if (place && place.geometry) {
       const location = place.geometry.location
       const lat = location.lat()
@@ -93,7 +136,7 @@ const Sidebar = ({ onAddressChange }) => {
       // Example of usage:
       const battery = false
       const energyPrize = 5
-      const totalConsumption = calculateTotalConsumption({ people: 1, ev: 1, sauna: 0, pool: 1, houseSize: HouseSize.MEDIUM, hotTub: 1 })
+      const totalConsumption = calculateTotalConsumption({ people: people, ev: ev, sauna: sauna, pool: pool, houseSize: house, hotTub: hotTub })
       const { currentMonthlyPayment, totalCostWithoutChange } = getCurrentMonthlyPaymentAndTotalCostWithoutChange(
         energyPrize,
         totalConsumption
@@ -102,6 +145,8 @@ const Sidebar = ({ onAddressChange }) => {
       const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, battery)
       const totalCostAfterSolar = getTotalCostAfterSolar(yearlyEnergyDcKwh, energyPrize, totalConsumption)
       const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment)
+
+
 
       console.log({
         totalConsumption,
@@ -115,39 +160,11 @@ const Sidebar = ({ onAddressChange }) => {
         totalCostAfterSolar,
         roi
       })
-    }
-  }
-  const [expectedProduced, setExpectedProduced] = useState("-")
-  const [expectedConsumed, setExpectedConsumed] = useState("-")
-  const [expectedCost, setExpectedCost] = useState("-")
-  const [savings, setSavings] = useState("-")
-  const [maxSolarPanels, setMaxSolarPanels] = useState("-")
-  const [ROI, setROI] = useState("-")
-  const [sunshineHours, setSunshineHours] = useState("-")
-  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState("-")
 
-  const handleAddressChange = async (event) => {
-    const newAddress = event.target.value
-    setAddress(newAddress)
+      setROI(roi)
+      setMaxSolarPanels(panelCount)
+      setkwhBattery(kwhBattery);
 
-    if (newAddress.trim() === '') return
-
-    try {
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
-        params: {
-          address: newAddress,
-          key: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY
-        }
-      })
-
-      const results = response.data.results
-      console.log(results)
-      if (results.length > 0) {
-        const location = results[0].geometry.location
-        onAddressChange(location)
-      }
-    } catch (error) {
-      console.error('Error fetching geocode data:', error)
     }
   }
 
@@ -165,6 +182,27 @@ const Sidebar = ({ onAddressChange }) => {
               placeholder='Enter your address'
             />
           </Autocomplete>
+        </div>
+        <div className='SidebarItem'>
+          <h2>Household Information</h2>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={houseImage}  style={{ marginLeft: '-2px' }}></img>
+              <div className='sideBar-content-item'>House Size</div>
+            </div>
+            <select defaultValue="medium" onChange={(e) => {setHouse(e.target.value.toUpperCase())}}>
+              <option value="small">Small (100 sqm)</option>
+              <option value="medium">Medium (150 sqm)</option>
+              <option value="large">Large (250 sqm)</option>
+            </select>          
+      </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={batteryImage}></img>
+              <div className='meter-container sideBar-content-item'>Energy Price</div>
+            </div>
+            <input className='household-info' type="number" name="energyPrize" id="energyPrize" onChange={(e) => {setenergyPrize(e.target.value)}} defaultValue={energyPrize}/>
+          </div>
         </div>
         <div className='SidebarItem secondary'>
           <h2>General Information</h2>
@@ -243,19 +281,23 @@ Sidebar.propTypes = {
 const Card = ({ title, description, inputType, src, setter }) => {
   return (
     <div className="card">
-      <img src={src} className='' alt="Card image" />
-      <h2 className="card-title">{title}</h2>
+      <div className='card-title-container'>
+        <img src={src} className='card-image' alt="Card image" />
+        <h2 className="card-title">{title}</h2>
+      </div>
       <p className="card-description">{description}</p>
       <div className="card-footer">
-        {inputType === "number" ? (<input type="number" id="numberInput" name="numberInput" />) : <></>}
-        {inputType == "checkbox" ? <input type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
-        {inputType == "radio" ? <input type="radio" id="radioInput" name="radioInput" /> : <></>}
+        {inputType === "number" ? (<input onChange={(e) => {setter(e.target.value)}} type="number" id="numberInput" name="numberInput" />) : <></>}
+        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.value)}} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
+        {inputType == "radio" ? <input onChange={(e) => {setter(e.target.value)}} type="radio" id="radioInput" name="radioInput" /> : <></>}
       </div>
     </div>
   );
 };
 
-const ParamSection = () => {
+const ParamSection = (states) => {
+  const {setEV, setPool, setHotTub, setPeople, setBattery, setAC} = states;
+
   return (
   <section className='param-section'>
     <div className="warning-container">
@@ -266,13 +308,45 @@ const ParamSection = () => {
     <div className='card-container'>
       <Card 
           title="People"
-          description="This is a very short description."
+          description="How many people live in your household?"
           inputType="number"
+          src={peopleImage}
+          setter={setPeople}
         />
       <Card 
           title="EV Car"
-          description="yaaa"
+          description="How many electric vehicles do you have in your household?"
           inputType = "number"  // Change to false for radio button
+          src={carImage}
+          setter={setEV}
+        />
+      <Card 
+          title="Swimming Pool"
+          description="Do you have a swimming pool at your house?"
+          inputType = "checkbox"  // Change to false for radio button
+          src={poolImage}
+          setter={setPool}
+        />
+        <Card 
+          title="HotTub"
+          description="Do you have a hottub at your house?"
+          inputType = "checkbox"  // Change to false for radio button
+          src={hotTubImage}
+          setter={setHotTub}
+        />
+        <Card 
+          title="Battery Storage"
+          description="Do you have want battery storage at your house?"
+          inputType = "checkbox"  // Change to false for radio button
+          src={batteryImage}
+          setter={setBattery}
+        />
+        <Card 
+          title="AC"
+          description="Do you have air conditioning at your house?"
+          inputType = "checkbox"  // Change to false for radio button
+          src={airConditionerImage}
+          setter={setAC}
         />
     </div>
   </section>
@@ -287,13 +361,78 @@ const App = () => {
     setCenter(location)
   }
 
+  const [address, setAddress] = useState('')
+  const [expectedProduced, setExpectedProduced] = useState("-")
+  const [expectedConsumed, setExpectedConsumed] = useState("-")
+  const [expectedCost, setExpectedCost] = useState("-")
+  const [savings, setSavings] = useState("-")
+  const [maxSolarPanels, setMaxSolarPanels] = useState("-")
+  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2 ] = useState("-")
+  const [ROI, setROI] = useState("-")
+  const [sunshineHours, setSunshineHours] = useState("-")
+  const [battery, setBattery] = useState(false)
+  const [house, setHouse] = useState(HouseSize.MEDIUM)
+  const [energyPrize, setenergyPrize] = useState(5)
+  const [sauna, setSauna] = useState(0)
+  const [ev, setEV] = useState(0)
+  const [ac, setAC] = useState(0)
+  const [hotTub, setHotTub] = useState(0)
+  const [pool, setPool] = useState(0)
+  const [kwhBattery, setkwhBattery] = useState(0)
+  const [heating, setHeating] = useState(0)
+  const [people, setPeople] = useState(2)
+
+  const states = {
+    expectedProduced,
+    setExpectedProduced,
+    expectedConsumed,
+    setExpectedConsumed,
+    expectedCost,
+    setExpectedCost,
+    savings,
+    setSavings,
+    address,
+    setAddress,
+    maxSolarPanels,
+    setkwhBattery,
+    setMaxSolarPanels,
+    maxArrayAreaMeters2,
+    setMaxArrayAreaMeters2,
+    ROI,
+    setROI,
+    sunshineHours,
+    setSunshineHours,
+    battery,
+    setBattery,
+    house,
+    setHouse,
+    energyPrize,
+    setEnergyPrize,
+    sauna,
+    setSauna,
+    ev,
+    setEV,
+    ac,
+    setAC,
+    hotTub,
+    setHotTub,
+    pool,
+    setPool,
+    kwhBattery,
+    setKwhBattery,
+    heating,
+    setHeating,
+    people,
+    setPeople,
+  };
+
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
       <div className='container'>
-        <MapComponent apiKey={apiKey} center={center} />
-        <Sidebar onAddressChange={handleAddressChange} />
+        <MapComponent apiKey={apiKey} center={center} states={states}/>
+        <Sidebar onAddressChange={handleAddressChange} states={states} />
       </div>
-      <ParamSection />
+      <ParamSection states={states}/>
     </LoadScript>
   )
 }
