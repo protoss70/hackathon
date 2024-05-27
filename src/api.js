@@ -25,3 +25,37 @@ export async function getSolarData(latitude, longitude) {
     throw error
   }
 }
+
+export async function getDataLayers(latitude, longitude, radius = 100) {
+  const url = `${BASE_URL}/dataLayers:get?location.latitude=${latitude}&location.longitude=${longitude}&radiusMeters=${radius}&key=${API_KEY}`
+
+  try {
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data layers: ${response.statusText}`)
+    }
+
+    const { dsmUrl, rgbUrl, annualFluxUrl, imageryQuality, maskUrl } = await response.json()
+
+    return { dsmUrl, rgbUrl, annualFluxUrl, imageryQuality, maskUrl }
+  } catch (error) {
+    console.error('Error fetching data layers:', error)
+    throw error
+  }
+}
+
+export async function getDataLayer(dataLayerUrl) {
+  try {
+    const response = await fetch(`${dataLayerUrl}&key=${API_KEY}`)
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data layer: ${response.statusText}`)
+    }
+
+    return response.blob()
+  } catch (error) {
+    console.error('Error fetching data layer:', error)
+    throw error
+  }
+}

@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
-import { getSolarData } from './api'
+import { getDataLayer, getDataLayers, getSolarData } from './api'
 
 const MapComponent = ({ apiKey, center }) => {
   return (
@@ -52,9 +52,13 @@ const Sidebar = ({ onAddressChange }) => {
       }
       setAddress(place.formatted_address)
       onAddressChange(latLng)
-      const data = await getSolarData(lat, lng)
-      setSunshineHours(data.maxSunshineHoursPerYear)
-      setMaxArrayAreaMeters2(data.setMaxArrayAreaMeters2)
+      const solarData = await getSolarData(lat, lng)
+      setSunshineHours(solarData.maxSunshineHoursPerYear)
+      setMaxArrayAreaMeters2(solarData.setMaxArrayAreaMeters2)
+
+      // this is how you can get the data layers
+      // const dataLayers = await getDataLayers(lat, lng)
+      // const res = await getDataLayer(dataLayers.rgbUrl)
     }
   }
   const [expectedProduced, setExpectedProduced] = useState(3169)
