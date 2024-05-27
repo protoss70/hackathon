@@ -63,6 +63,10 @@ const Sidebar = ({ onAddressChange }) => {
       // this is how you can get the data layers
       // const dataLayers = await getDataLayers(lat, lng)
       // const res = await getDataLayer(dataLayers.rgbUrl)
+
+      // const panelCount = solarData.maxArrayPanelsCount
+      // const panels = solarData.solarPanelConfigs
+      // const panelCapacityWatts = solarData.panelCapacityWatts
     }
   }
   const [expectedProduced, setExpectedProduced] = useState(3169)
@@ -72,10 +76,6 @@ const Sidebar = ({ onAddressChange }) => {
   const [ROI, setROI] = useState(3169)
   const [sunshineHours, setSunshineHours] = useState(3169)
   const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState(3169)
-
-  useEffect(() => {
-    console.log(maxArrayAreaMeters2)
-  }, [maxArrayAreaMeters2])
 
   const handleAddressChange = async (event) => {
     const newAddress = event.target.value
