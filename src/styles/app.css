@@ -27,7 +27,7 @@
 .item-container{
     display: flex;
     justify-content: space-between;
-    margin: 0 10px;
+    margin: 10px 0px;
 }
 
 /* Sidebar item styles */
@@ -54,7 +54,8 @@
 
 .meter-square{
     position: absolute;
-    top: -5px;
+    top: -4px;
+    right: -14px;
     font-size: 14px;
 }
 
