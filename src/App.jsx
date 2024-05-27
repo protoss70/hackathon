@@ -12,6 +12,13 @@ import plusImage from "./assets/plus.svg"
 import minusImage from "./assets/minus.svg"
 import savingsImage from "./assets/saving.svg"
 import roiImage from "./assets/ROI.svg"
+import hotTubImage from './assets/hot-tub.svg';
+import houseImage from './assets/house.svg';
+import carImage from './assets/car.svg';
+import airConditionerImage from './assets/air-conditioner.svg';
+import peopleImage from './assets/people.svg';
+import batteryImage from './assets/battery.svg';
+import poolImage from './assets/pool.svg';
 
 const MapComponent = ({ apiKey, center }) => {
   return (
@@ -73,14 +80,14 @@ const Sidebar = ({ onAddressChange }) => {
       // const panelCapacityWatts = solarData.panelCapacityWatts
     }
   }
-  const [expectedProduced, setExpectedProduced] = useState(3169)
-  const [expectedConsumed, setExpectedConsumed] = useState(3169)
-  const [expectedCost, setExpectedCost] = useState(3169)
-  const [savings, setSavings] = useState(3169)
-  const [maxSolarPanels, setMaxSolarPanels] = useState(3169)
-  const [ROI, setROI] = useState(3169)
-  const [sunshineHours, setSunshineHours] = useState(3169)
-  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState(3169)
+  const [expectedProduced, setExpectedProduced] = useState("-")
+  const [expectedConsumed, setExpectedConsumed] = useState("-")
+  const [expectedCost, setExpectedCost] = useState("-")
+  const [savings, setSavings] = useState("-")
+  const [maxSolarPanels, setMaxSolarPanels] = useState("-")
+  const [ROI, setROI] = useState("-")
+  const [sunshineHours, setSunshineHours] = useState("-")
+  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState("-")
 
   const handleAddressChange = async (event) => {
     const newAddress = event.target.value
@@ -108,95 +115,131 @@ const Sidebar = ({ onAddressChange }) => {
   }
 
   return (
-    <div className='SidebarContainer'>
-      <div className='SidebarItem'>
-        <h2>Address</h2>
-        <Autocomplete onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)} onPlaceChanged={handlePlaceSelect}>
-          <input
-            type='text'
-            className='sidebar-input'
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder='Enter your address'
-          />
-        </Autocomplete>
+    <>
+      <div className='SidebarContainer'>
+        <div className='SidebarItem' style={{paddingBottom: "25px"}}>
+          <h2>Address</h2>
+          <Autocomplete onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)} onPlaceChanged={handlePlaceSelect}>
+            <input
+              type='text'
+              className='sidebar-input'
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder='Enter your address'
+            />
+          </Autocomplete>
+        </div>
+        <div className='SidebarItem secondary'>
+          <h2>General Information</h2>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={sunImage}  style={{ marginLeft: '-2px' }}></img>
+              <div className='sideBar-content-item'>Sunshine hours/year:</div>
+            </div>
+            <div>{sunshineHours}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={areaImage}></img>
+              <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span></div>
+            </div>
+            <div>{maxArrayAreaMeters2}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={solarImage}></img>
+              <div className='meter-container sideBar-content-item'>Max Panel Count</div>
+            </div>
+            <div>{maxSolarPanels}</div>
+          </div>
+        </div>
+        <div className='SidebarItem secondary'>
+          <h2>Expected</h2>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={plusImage} style={{width: "20px"}}></img>
+              <div className='meter-container sideBar-content-item'>Produced</div>
+            </div>
+            <div>{expectedProduced}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={minusImage} style={{width: "20px"}}></img>
+              <div className='meter-container sideBar-content-item'>Consumed</div>
+            </div>
+            <div>{expectedConsumed}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={costImage} style={{ width: '23px', marginLeft: "-2px" }}></img>
+              <div className='meter-container sideBar-content-item'>Cost</div>
+            </div>
+            <div>{expectedCost}</div>
+          </div>
+        </div>
+        <div className='SidebarItem secondary'>
+          <h2>Financial:</h2>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={savingsImage}></img>
+              <div className='meter-container sideBar-content-item'>Saving</div>
+            </div>
+            <div>{savings}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={roiImage}></img>
+              <div className='meter-container sideBar-content-item'>Return On Investment</div>
+            </div>
+            <div>{ROI}</div>
+          </div>
+        </div>
       </div>
-      <div className='SidebarItem secondary'>
-        <h2>General Information</h2>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={sunImage}  style={{ marginLeft: '-2px' }}></img>
-            <div className='sideBar-content-item'>Sunshine hours/year:</div>
-          </div>
-          <div>{sunshineHours}</div>
-        </div>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={areaImage}></img>
-            <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span></div>
-          </div>
-          <div>{maxArrayAreaMeters2}</div>
-        </div>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={solarImage}></img>
-            <div className='meter-container sideBar-content-item'>Max Panel Count</div>
-          </div>
-          <div>{maxSolarPanels}</div>
-        </div>
-      </div>
-      <div className='SidebarItem secondary'>
-        <h2>Expected</h2>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={plusImage} style={{width: "20px"}}></img>
-            <div className='meter-container sideBar-content-item'>Produced</div>
-          </div>
-          <div>{expectedProduced}</div>
-        </div>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={minusImage} style={{width: "20px"}}></img>
-            <div className='meter-container sideBar-content-item'>Consumed</div>
-          </div>
-          <div>{expectedConsumed}</div>
-        </div>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={costImage} style={{ width: '23px', marginLeft: "-2px" }}></img>
-            <div className='meter-container sideBar-content-item'>Cost</div>
-          </div>
-          <div>{expectedCost}</div>
-        </div>
-      </div>
-      <div className='SidebarItem secondary'>
-        <h2>Financial:</h2>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={solarImage}></img>
-            <div className='meter-container sideBar-content-item'>Saving</div>
-          </div>
-          <div>{savings}</div>
-        </div>
-        <div className='item-container'>
-          <div className='item-label-container'>
-            <img className='item-svg' src={solarImage}></img>
-            <div className='meter-container sideBar-content-item'>Return On Investment</div>
-          </div>
-          <div>{maxSolarPanels}</div>
-        </div>
-        <span>{ROI}</span>
-      </div>
-      <div className='SidebarItem secondary'>
-        <h2>:</h2>
-        <span>{}</span>
-      </div>
-    </div>
+    </>
   )
 }
 
 Sidebar.propTypes = {
   onAddressChange: PropTypes.func.isRequired
+}
+
+const Card = ({ title, description, inputType, src, setter }) => {
+  return (
+    <div className="card">
+      <img src={src} className='' alt="Card image" />
+      <h2 className="card-title">{title}</h2>
+      <p className="card-description">{description}</p>
+      <div className="card-footer">
+        {inputType === "number" ? (<input type="number" id="numberInput" name="numberInput" />) : <></>}
+        {inputType == "checkbox" ? <input type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
+        {inputType == "radio" ? <input type="radio" id="radioInput" name="radioInput" /> : <></>}
+      </div>
+    </div>
+  );
+};
+
+const ParamSection = () => {
+  return (
+  <section className='param-section'>
+    <div className="warning-container">
+      <p className="warning-text">
+        Please provide the following information for a more accurate calculation
+      </p>
+    </div>
+    <div className='card-container'>
+      <Card 
+          title="People"
+          description="This is a very short description."
+          inputType="number"
+        />
+      <Card 
+          title="EV Car"
+          description="yaaa"
+          inputType = "number"  // Change to false for radio button
+        />
+    </div>
+  </section>
+  )
 }
 
 const App = () => {
@@ -213,6 +256,7 @@ const App = () => {
         <MapComponent apiKey={apiKey} center={center} />
         <Sidebar onAddressChange={handleAddressChange} />
       </div>
+      <ParamSection />
     </LoadScript>
   )
 }
