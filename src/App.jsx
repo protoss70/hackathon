@@ -64,9 +64,7 @@ const Sidebar = ({ onAddressChange, states }) => {
     expectedConsumed,
     setExpectedConsumed,
     expectedCost,
-    setExpectedCost,
     savings,
-    setSavings,
     address,
     setAddress,
     maxSolarPanels,
@@ -86,6 +84,8 @@ const Sidebar = ({ onAddressChange, states }) => {
     pool,
     people,
   } = states;
+
+  console.log('batarya', battery)
   
   const autocompleteRef = useRef(null)
 
@@ -134,15 +134,15 @@ const Sidebar = ({ onAddressChange, states }) => {
       // const panelCapacityWatts = solarData.panelCapacityWatts
 
       // Example of usage:
-      const battery = false
+      const _battery = battery === 1 ? true : false
       const energyPrize = 5
       const totalConsumption = calculateTotalConsumption({ people: people, ev: ev, sauna: sauna, pool: pool, houseSize: house, hotTub: hotTub })
       const { currentMonthlyPayment, totalCostWithoutChange } = getCurrentMonthlyPaymentAndTotalCostWithoutChange(
         energyPrize,
         totalConsumption
       )
-      const { panelCount, yearlyEnergyDcKwh } = calculatePanelCount(battery, totalConsumption, panels)
-      const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, battery)
+      const { panelCount, yearlyEnergyDcKwh } = calculatePanelCount(_battery, totalConsumption, panels)
+      const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, _battery)
       const totalCostAfterSolar = getTotalCostAfterSolar(yearlyEnergyDcKwh, energyPrize, totalConsumption)
       const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment)
 
@@ -161,6 +161,8 @@ const Sidebar = ({ onAddressChange, states }) => {
         roi
       })
 
+      setExpectedProduced(yearlyEnergyDcKwh)
+      setExpectedConsumed(totalConsumption)
       setROI(roi)
       setMaxSolarPanels(panelCount)
       setkwhBattery(kwhBattery);
@@ -244,13 +246,6 @@ const Sidebar = ({ onAddressChange, states }) => {
             </div>
             <div>{expectedConsumed}</div>
           </div>
-          <div className='item-container'>
-            <div className='item-label-container'>
-              <img className='item-svg' src={costImage} style={{ width: '23px', marginLeft: "-2px" }}></img>
-              <div className='meter-container sideBar-content-item'>Cost</div>
-            </div>
-            <div>{expectedCost}</div>
-          </div>
         </div>
         <div className='SidebarItem secondary'>
           <h2>Financial:</h2>
@@ -260,6 +255,13 @@ const Sidebar = ({ onAddressChange, states }) => {
               <div className='meter-container sideBar-content-item'>Saving</div>
             </div>
             <div>{savings}</div>
+          </div>
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={costImage} ></img>
+              <div className='meter-container sideBar-content-item'>Cost</div>
+            </div>
+            <div>{expectedCost}</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
@@ -278,7 +280,8 @@ Sidebar.propTypes = {
   onAddressChange: PropTypes.func.isRequired
 }
 
-const Card = ({ title, description, inputType, src, setter }) => {
+const Card = ({ title, description, inputType, val, src, setter }) => {
+
   return (
     <div className="card">
       <div className='card-title-container'>
@@ -287,19 +290,31 @@ const Card = ({ title, description, inputType, src, setter }) => {
       </div>
       <p className="card-description">{description}</p>
       <div className="card-footer">
-        {inputType === "number" ? (<input onChange={(e) => {setter(e.target.value)}} type="number" id="numberInput" name="numberInput" />) : <></>}
-        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.value)}} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
-        {inputType == "radio" ? <input onChange={(e) => {setter(e.target.value)}} type="radio" id="radioInput" name="radioInput" /> : <></>}
+        {inputType === "number" ? (<input onChange={(e) => {setter(e.target.value)}} value={val} type="number" id="numberInput" name="numberInput" />) : <></>}
+        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.value)}} checked={val === 1 ? true : false} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
       </div>
     </div>
   );
 };
 
 const ParamSection = (states) => {
-  const {setEV, setPool, setHotTub, setPeople, setBattery, setAC} = states;
+  const {
+    battery,
+    setBattery,
+    ev,
+    setEV,
+    ac,
+    setAC,
+    hotTub,
+    setHotTub,
+    pool,
+    setPool,
+    people,
+    setPeople
+  } = states.states;
 
   return (
-  <section className='param-section'>
+  <section className='param-section secondary'>
     <div className="warning-container">
       <p className="warning-text">
         Please provide the following information for a more accurate calculation
@@ -311,6 +326,7 @@ const ParamSection = (states) => {
           description="How many people live in your household?"
           inputType="number"
           src={peopleImage}
+          val={people}
           setter={setPeople}
         />
       <Card 
@@ -318,34 +334,39 @@ const ParamSection = (states) => {
           description="How many electric vehicles do you have in your household?"
           inputType = "number"  // Change to false for radio button
           src={carImage}
+          val={ev}
           setter={setEV}
+        />
+        <Card 
+          title="Battery Storage"
+          description="Do you want battery storage installed at your house?"
+          inputType = "checkbox"  // Change to false for radio button
+          src={batteryImage}
+          val={battery}
+          setter={setBattery}
         />
       <Card 
           title="Swimming Pool"
           description="Do you have a swimming pool at your house?"
           inputType = "checkbox"  // Change to false for radio button
           src={poolImage}
+          val={pool}
           setter={setPool}
         />
         <Card 
-          title="HotTub"
-          description="Do you have a hottub at your house?"
+          title="Hot Tub"
+          description="Do you have a hot tub at your house?"
           inputType = "checkbox"  // Change to false for radio button
           src={hotTubImage}
+          val={hotTub}
           setter={setHotTub}
-        />
-        <Card 
-          title="Battery Storage"
-          description="Do you have want battery storage at your house?"
-          inputType = "checkbox"  // Change to false for radio button
-          src={batteryImage}
-          setter={setBattery}
         />
         <Card 
           title="AC"
           description="Do you have air conditioning at your house?"
           inputType = "checkbox"  // Change to false for radio button
           src={airConditionerImage}
+          val={ac}
           setter={setAC}
         />
     </div>
@@ -370,7 +391,7 @@ const App = () => {
   const [maxArrayAreaMeters2, setMaxArrayAreaMeters2 ] = useState("-")
   const [ROI, setROI] = useState("-")
   const [sunshineHours, setSunshineHours] = useState("-")
-  const [battery, setBattery] = useState(false)
+  const [battery, setBattery] = useState(0)
   const [house, setHouse] = useState(HouseSize.MEDIUM)
   const [energyPrize, setenergyPrize] = useState(5)
   const [sauna, setSauna] = useState(0)
@@ -383,6 +404,7 @@ const App = () => {
   const [people, setPeople] = useState(2)
 
   const states = {
+    setenergyPrize,
     expectedProduced,
     setExpectedProduced,
     expectedConsumed,
@@ -407,7 +429,6 @@ const App = () => {
     house,
     setHouse,
     energyPrize,
-    setEnergyPrize,
     sauna,
     setSauna,
     ev,
@@ -419,7 +440,6 @@ const App = () => {
     pool,
     setPool,
     kwhBattery,
-    setKwhBattery,
     heating,
     setHeating,
     people,
