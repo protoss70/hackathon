@@ -117,17 +117,6 @@ const Sidebar = ({ onAddressChange }) => {
         <h2>Return On Investment:</h2>
         <span>{ROI}</span>
       </div>
-      <div className='SidebarItem secondary'>
-        <h2>Return On Investment</h2>
-        <textarea
-          name='address'
-          id='address'
-          className='sidebar-input'
-          value={address}
-          onChange={handleAddressChange}
-          placeholder='Enter your address'
-        />
-      </div>
     </div>
   )
 }
