@@ -1,110 +1,110 @@
-import PropTypes from 'prop-types';
-import GoogleMapReact from 'google-map-react';
-import { useState } from 'react';
-import axios from 'axios';
-import "./styles/app.css";
+import PropTypes from 'prop-types'
+import { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
+import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
+import './styles/app.css'
 
 const MapComponent = ({ apiKey, center }) => {
   return (
-    <div className="MapComponentContainer">
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: apiKey }}
+    <div className='MapComponentContainer'>
+      <GoogleMap
+        mapContainerStyle={{ width: '100%', height: '100%' }}
         center={center}
-        defaultZoom={19}
-        onClick={(e) => {console.log(e)}}
+        zoom={19}
+        onClick={(e) => {
+          console.log(e)
+        }}
       >
         {/* Add any markers or overlays here */}
-      </GoogleMapReact>
+      </GoogleMap>
     </div>
-  );
-};
+  )
+}
 
 MapComponent.propTypes = {
   apiKey: PropTypes.string.isRequired,
   center: PropTypes.shape({
     lat: PropTypes.number,
-    lng: PropTypes.number,
-  }).isRequired,
-};
+    lng: PropTypes.number
+  }).isRequired
+}
 
 const Sidebar = ({ onAddressChange }) => {
-  const [address, setAddress] = useState('Nám. J. Palacha 1, 110 00 Staré Město');
+  const [address, setAddress] = useState('Nám. J. Palacha 1, 110 00 Staré Město')
+  const autocompleteRef = useRef(null)
 
-  const handleAddressChange = async (event) => {
-    const newAddress = event.target.value;
-    setAddress(newAddress);
-    
-    if (newAddress.trim() === '') return;
-
-    try {
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
-        params: {
-          address: newAddress,
-          key: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
-        },
-      });
-      
-      const results = response.data.results;
-      console.log(results);
-      if (results.length > 0) {
-        const location = results[0].geometry.location;
-        onAddressChange(location);
-      }
-    } catch (error) {
-      console.error('Error fetching geocode data:', error);
+  useEffect(() => {
+    if (autocompleteRef.current) {
+      autocompleteRef.current.addListener('place_changed', handlePlaceSelect)
     }
-  };
+  }, [])
+
+  const handlePlaceSelect = () => {
+    const place = autocompleteRef.current.getPlace()
+    if (place && place.geometry) {
+      const location = place.geometry.location
+      const latLng = {
+        lat: location.lat(),
+        lng: location.lng()
+      }
+      setAddress(place.formatted_address)
+      onAddressChange(latLng)
+    }
+  }
 
   return (
-    <div className="SidebarContainer">
-      <div className="SidebarItem">
+    <div className='SidebarContainer'>
+      <div className='SidebarItem'>
         <h2>Address</h2>
-        <textarea
-          name="address"
-          id="address"
-          className="sidebar-input"
-          value={address}
-          onChange={handleAddressChange}
-          placeholder="Enter your address"
-        />
+        <Autocomplete onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)} onPlaceChanged={handlePlaceSelect}>
+          <input
+            type='text'
+            className='sidebar-input'
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder='Enter your address'
+          />
+        </Autocomplete>
       </div>
-      <div className="SidebarItem secondary">
+      <div className='SidebarItem secondary'>
         <h2>Expected Produces</h2>
       </div>
-      <div className="SidebarItem secondary">
-        <h2>Excpected Consumed</h2>
+      <div className='SidebarItem secondary'>
+        <h2>Expected Consumed</h2>
       </div>
-      <div className="SidebarItem secondary">
-        <h2>Excpected Cost</h2>
+      <div className='SidebarItem secondary'>
+        <h2>Expected Cost</h2>
       </div>
-      <div className="SidebarItem secondary">
+      <div className='SidebarItem secondary'>
         <h2>Savings</h2>
       </div>
-      <div className="SidebarItem secondary">
+      <div className='SidebarItem secondary'>
         <h2>Return On Investment</h2>
       </div>
     </div>
-  );
-};
+  )
+}
 
 Sidebar.propTypes = {
-  onAddressChange: PropTypes.func.isRequired,
-};
+  onAddressChange: PropTypes.func.isRequired
+}
 
 const App = () => {
-  const apiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
-  const [center, setCenter] = useState({ lat: 50.08900098216196, lng: 14.415900083914272 });
+  const apiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY
+  const [center, setCenter] = useState({ lat: 50.08900098216196, lng: 14.415900083914272 })
 
   const handleAddressChange = (location) => {
-    setCenter(location);
-  };
+    setCenter(location)
+  }
 
   return (
-    <div className="container">
-      <MapComponent apiKey={apiKey} center={center} />
-      <Sidebar onAddressChange={handleAddressChange} />
-    </div>
-  );
-};
+    <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
+      <div className='container'>
+        <MapComponent apiKey={apiKey} center={center} />
+        <Sidebar onAddressChange={handleAddressChange} />
+      </div>
+    </LoadScript>
+  )
+}
 
-export default App;
+export default App
