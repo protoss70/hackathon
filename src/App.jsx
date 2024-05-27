@@ -94,7 +94,7 @@ const Sidebar = ({ onAddressChange, states }) => {
     pool,
     setPool,
     kwhBattery,
-    setKwhBattery,
+    setkwhBattery,
     heating,
     setHeating,
     people,
@@ -186,7 +186,7 @@ const Sidebar = ({ onAddressChange, states }) => {
       setExpectedConsumed(totalConsumption)
       setROI(roi)
       setMaxSolarPanels(panelCount)
-      setKwhBattery(kwhBattery);
+      setkwhBattery(kwhBattery);
 
     }
   }
