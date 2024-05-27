@@ -51,6 +51,37 @@ const Sidebar = ({ onAddressChange }) => {
       onAddressChange(latLng)
     }
   }
+  const [expectedProduced, setExpectedProduced] = useState(3169)
+  const [expectedConsumed, setExpectedConsumed] = useState(3169)
+  const [expectedCost, setExpectedCost] = useState(3169)
+  const [savings, setSavings] = useState(3169)
+  const [ROI, setROI] = useState(3169)
+  const [sunshineHours, setSunshineHours] = useState(3169)
+
+  const handleAddressChange = async (event) => {
+    const newAddress = event.target.value
+    setAddress(newAddress)
+
+    if (newAddress.trim() === '') return
+
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+        params: {
+          address: newAddress,
+          key: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY
+        }
+      })
+
+      const results = response.data.results
+      console.log(results)
+      if (results.length > 0) {
+        const location = results[0].geometry.location
+        onAddressChange(location)
+      }
+    } catch (error) {
+      console.error('Error fetching geocode data:', error)
+    }
+  }
 
   return (
     <div className='SidebarContainer'>
@@ -67,19 +98,35 @@ const Sidebar = ({ onAddressChange }) => {
         </Autocomplete>
       </div>
       <div className='SidebarItem secondary'>
-        <h2>Expected Produces</h2>
+        <h2>General Information</h2>
+        <div className='sideBar-content-item'>Sunshine hours/year: <span>{sunshineHours}</span></div>
+        <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span>&nbsp;&nbsp;:<span>{expectedConsumed}</span></div>
+        <div className='sideBar-content-item'>Cost: <span>{expectedCost}</span></div>
       </div>
       <div className='SidebarItem secondary'>
-        <h2>Expected Consumed</h2>
+        <h2>Expected</h2>
+        <div className='sideBar-content-item'>Produced: <span>{expectedProduced}</span></div>
+        <div className='sideBar-content-item'>Consumed: <span>{expectedConsumed}</span></div>
+        <div className='sideBar-content-item'>Cost: <span>{expectedCost}</span></div>
       </div>
       <div className='SidebarItem secondary'>
-        <h2>Expected Cost</h2>
+        <h2>Savings:</h2>
+        <span>{savings}</span>
       </div>
       <div className='SidebarItem secondary'>
-        <h2>Savings</h2>
+        <h2>Return On Investment:</h2>
+        <span>{ROI}</span>
       </div>
       <div className='SidebarItem secondary'>
         <h2>Return On Investment</h2>
+        <textarea
+          name='address'
+          id='address'
+          className='sidebar-input'
+          value={address}
+          onChange={handleAddressChange}
+          placeholder='Enter your address'
+        />
       </div>
     </div>
   )
@@ -107,4 +154,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
