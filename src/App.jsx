@@ -64,7 +64,9 @@ const Sidebar = ({ onAddressChange, states }) => {
     expectedConsumed,
     setExpectedConsumed,
     expectedCost,
+    setExpectedCost,
     savings,
+    setSavings,
     address,
     setAddress,
     maxSolarPanels,
@@ -75,15 +77,30 @@ const Sidebar = ({ onAddressChange, states }) => {
     setROI,
     sunshineHours,
     setSunshineHours,
+    battery,
+    setBattery,
     house,
     setHouse,
     energyPrize,
+    setEnergyPrize,
     sauna,
+    setSauna,
     ev,
+    setEV,
+    ac,
+    setAC,
     hotTub,
+    setHotTub,
     pool,
+    setPool,
+    kwhBattery,
+    setKwhBattery,
+    heating,
+    setHeating,
     people,
+    setPeople
   } = states;
+  
 
   console.log('batarya', battery)
   
@@ -107,6 +124,10 @@ const Sidebar = ({ onAddressChange, states }) => {
       element.classList.remove('secondary');
     });
   }
+
+  useEffect(() => {
+    handlePlaceSelect()
+  }, [house, energyPrize, people, ev, battery, ac, pool, hotTub])
 
   const handlePlaceSelect = async () => {
     const place = autocompleteRef.current.getPlace()
@@ -165,7 +186,7 @@ const Sidebar = ({ onAddressChange, states }) => {
       setExpectedConsumed(totalConsumption)
       setROI(roi)
       setMaxSolarPanels(panelCount)
-      setkwhBattery(kwhBattery);
+      setKwhBattery(kwhBattery);
 
     }
   }
@@ -291,7 +312,7 @@ const Card = ({ title, description, inputType, val, src, setter }) => {
       <p className="card-description">{description}</p>
       <div className="card-footer">
         {inputType === "number" ? (<input onChange={(e) => {setter(e.target.value)}} value={val} type="number" id="numberInput" name="numberInput" />) : <></>}
-        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.value)}} checked={val === 1 ? true : false} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
+        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.checked ? 1 : 0)}} checked={val === 1 ? true : false} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
       </div>
     </div>
   );
