@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState, useRef, useEffect } from 'react'
-import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
 import sunImage from './assets/sun.svg'
 import solarImage from './assets/solar.svg'
-import areaImage from './assets/area.svg'
 import costImage from './assets/cost.svg'
 import plusImage from './assets/plus.svg'
 import minusImage from './assets/minus.svg'
@@ -18,6 +16,7 @@ import airConditionerImage from './assets/air-conditioner.svg'
 import peopleImage from './assets/people.svg'
 import batteryImage from './assets/battery.svg'
 import poolImage from './assets/pool.svg'
+import solarArrayImage from './assets/solar_array.svg'
 import {
   HouseSize,
   calculatePanelCount,
@@ -269,7 +268,7 @@ const Sidebar = ({ onAddressChange, states }) => {
           
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={areaImage}></img>
+              <img className='item-svg' src={batteryImage}></img>
               <div className='meter-container sideBar-content-item'>
                 Optimal battery capacity
               </div>
@@ -279,7 +278,7 @@ const Sidebar = ({ onAddressChange, states }) => {
 
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={areaImage}></img>
+              <img className='item-svg' src={solarArrayImage}></img>
               <div className='meter-container sideBar-content-item'>
                 Optimal Solar Array
               </div>
@@ -301,14 +300,14 @@ const Sidebar = ({ onAddressChange, states }) => {
               <img className='item-svg' src={plusImage} style={{ width: '20px' }}></img>
               <div className='meter-container sideBar-content-item'>Produced</div>
             </div>
-            <div>{expectedProduced}</div>
+            <div>{expectedProduced} kWh</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={minusImage} style={{ width: '20px' }}></img>
               <div className='meter-container sideBar-content-item'>Consumed</div>
             </div>
-            <div>{expectedConsumed}</div>
+            <div>{expectedConsumed} kWh</div>
           </div>
         </div>
         <div className='SidebarItem secondary'>
@@ -318,21 +317,21 @@ const Sidebar = ({ onAddressChange, states }) => {
               <img className='item-svg' src={savingsImage}></img>
               <div className='meter-container sideBar-content-item'>Saving</div>
             </div>
-            <div>{savings}</div>
+            <div>{savings} Kč</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={costImage}></img>
               <div className='meter-container sideBar-content-item'>Cost</div>
             </div>
-            <div>{expectedCost}</div>
+            <div>{expectedCost} Kč</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={roiImage}></img>
               <div className='meter-container sideBar-content-item'>Return On Investment</div>
             </div>
-            <div>{ROI}</div>
+            <div>{ROI} Years</div>
           </div>
         </div>
       </div>
