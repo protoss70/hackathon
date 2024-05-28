@@ -1,8 +1,15 @@
-# React + Vite
+# I love solar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React.js web application deployed on Firebase, utilizing the Google Maps, Google Solar APIs and custom calculations to help users estimate the benefits and costs of installing solar panels based on their location and household details.
 
-Currently, two official plugins are available:
+# Usage
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To run the app, add you google maps api key to env var `VITE_REACT_APP_GOOGLE_MAPS_API_KEY`
+
+Install the dependencies
+
+`npm install`
+
+Run the app
+
+`npm run dev`
