@@ -97,7 +97,9 @@ const Sidebar = ({ onAddressChange, states }) => {
     heating,
     setHeating,
     people,
-    setPeople
+    setPeople,
+    kwpSolar,
+    setKwpSolar,
   } = states
 
   console.log('batarya', battery)
@@ -142,7 +144,7 @@ const Sidebar = ({ onAddressChange, states }) => {
       onAddressChange(latLng)
       const solarData = await getSolarData(lat, lng)
       setSunshineHours(solarData.maxSunshineHoursPerYear)
-      setMaxArrayAreaMeters2(solarData.maxArrayAreaMeters2)
+      setMaxArrayAreaMeters2(solarData.maxArrayAreaMeters2.toFixed(2))
 
       // this is how you can get the data layers
       // const dataLayers = await getDataLayers(lat, lng)
@@ -170,7 +172,7 @@ const Sidebar = ({ onAddressChange, states }) => {
       const { panelCount, yearlyEnergyDcKwh } = calculatePanelCount(_battery, totalConsumption, panels)
       const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, _battery)
       const totalCostAfterSolar = getTotalCostAfterSolar(yearlyEnergyDcKwh, energyPrize, totalConsumption)
-      const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment)
+      const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment).toFixed(2)
 
       console.log({
         totalConsumption,
@@ -187,9 +189,12 @@ const Sidebar = ({ onAddressChange, states }) => {
 
       setExpectedProduced(yearlyEnergyDcKwh.toFixed(2))
       setExpectedConsumed(totalConsumption)
-      setROI(roi.toFixed(2))
+      setROI(parseInt(roi).toFixed(2))
       setMaxSolarPanels(panelCount)
-      setkwhBattery(kwhBattery)
+      setkwhBattery(kwhBattery.toFixed(2))
+      setExpectedCost(installationCost.toFixed(2))
+      setSavings(Math.abs(totalCostAfterSolar + installationCost - totalCostWithoutChange).toFixed(2))
+      setKwpSolar(kwpSolar.toFixed(2))
     }
   }
 
@@ -252,7 +257,7 @@ const Sidebar = ({ onAddressChange, states }) => {
             </div>
             <div>{sunshineHours}</div>
           </div>
-          <div className='item-container'>
+          {/* <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={areaImage}></img>
               <div className='meter-container sideBar-content-item'>
@@ -260,6 +265,26 @@ const Sidebar = ({ onAddressChange, states }) => {
               </div>
             </div>
             <div>{maxArrayAreaMeters2}</div>
+          </div> */}
+          
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={areaImage}></img>
+              <div className='meter-container sideBar-content-item'>
+                Optimal battery capacity
+              </div>
+            </div>
+            <div>{kwhBattery} kWh</div>
+          </div>
+
+          <div className='item-container'>
+            <div className='item-label-container'>
+              <img className='item-svg' src={areaImage}></img>
+              <div className='meter-container sideBar-content-item'>
+                Optimal Solar Array
+              </div>
+            </div>
+            <div>{kwpSolar} kWp</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
@@ -449,8 +474,11 @@ const App = () => {
   const [kwhBattery, setkwhBattery] = useState(0)
   const [heating, setHeating] = useState(0)
   const [people, setPeople] = useState(2)
+  const [kwpSolar, setKwpSolar] = useState("-")
 
   const states = {
+    kwpSolar,
+    setKwpSolar,
     setenergyPrize,
     expectedProduced,
     setExpectedProduced,

@@ -15,7 +15,7 @@
 .SidebarContainer {
     width: calc(30% - 20px);
     float: left;
-    height: 870px;
+    height: 900px;
     display: flex;
     justify-content: start;
     align-items: start;
@@ -50,7 +50,7 @@
 }
 
 .MapComponentContainer{
-    height: 880px;
+    height: 910px;
 }
 
 .sidebar-input{
