@@ -264,7 +264,7 @@ const Sidebar = ({ onAddressChange, states }) => {
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={solarImage}></img>
-              <div className='meter-container sideBar-content-item'>Max Panel Count</div>
+              <div className='meter-container sideBar-content-item'>Optimal Panel Count</div>
             </div>
             <div>{maxSolarPanels}</div>
           </div>
