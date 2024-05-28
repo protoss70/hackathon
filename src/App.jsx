@@ -142,7 +142,7 @@ const Sidebar = ({ onAddressChange, states }) => {
       onAddressChange(latLng)
       const solarData = await getSolarData(lat, lng)
       setSunshineHours(solarData.maxSunshineHoursPerYear)
-      setMaxArrayAreaMeters2(solarData.setMaxArrayAreaMeters2)
+      setMaxArrayAreaMeters2(solarData.maxArrayAreaMeters2)
 
       // this is how you can get the data layers
       // const dataLayers = await getDataLayers(lat, lng)
