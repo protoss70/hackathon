@@ -3,21 +3,21 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { GoogleMap, LoadScript, Autocomplete } from '@react-google-maps/api'
 import './styles/app.css'
-import sunImage from './assets/sun.svg';
-import solarImage from "./assets/solar.svg"
-import areaImage from "./assets/area.svg"
-import costImage from "./assets/cost.svg"
-import plusImage from "./assets/plus.svg"
-import minusImage from "./assets/minus.svg"
-import savingsImage from "./assets/saving.svg"
-import roiImage from "./assets/ROI.svg"
-import hotTubImage from './assets/hot-tub.svg';
-import houseImage from './assets/house.svg';
-import carImage from './assets/car.svg';
-import airConditionerImage from './assets/air-conditioner.svg';
-import peopleImage from './assets/people.svg';
-import batteryImage from './assets/battery.svg';
-import poolImage from './assets/pool.svg';
+import sunImage from './assets/sun.svg'
+import solarImage from './assets/solar.svg'
+import areaImage from './assets/area.svg'
+import costImage from './assets/cost.svg'
+import plusImage from './assets/plus.svg'
+import minusImage from './assets/minus.svg'
+import savingsImage from './assets/saving.svg'
+import roiImage from './assets/ROI.svg'
+import hotTubImage from './assets/hot-tub.svg'
+import houseImage from './assets/house.svg'
+import carImage from './assets/car.svg'
+import airConditionerImage from './assets/air-conditioner.svg'
+import peopleImage from './assets/people.svg'
+import batteryImage from './assets/battery.svg'
+import poolImage from './assets/pool.svg'
 import {
   HouseSize,
   calculatePanelCount,
@@ -57,7 +57,6 @@ MapComponent.propTypes = {
 }
 
 const Sidebar = ({ onAddressChange, states }) => {
-
   const {
     expectedProduced,
     setExpectedProduced,
@@ -99,11 +98,10 @@ const Sidebar = ({ onAddressChange, states }) => {
     setHeating,
     people,
     setPeople
-  } = states;
-  
+  } = states
 
   console.log('batarya', battery)
-  
+
   const autocompleteRef = useRef(null)
 
   useEffect(() => {
@@ -114,15 +112,15 @@ const Sidebar = ({ onAddressChange, states }) => {
 
   const removeSecondary = () => {
     // Get all elements with the class 'secondary'
-    const elements = document.getElementsByClassName('secondary');
+    const elements = document.getElementsByClassName('secondary')
 
     // Convert the HTMLCollection to an array to safely modify the class list
-    const elementsArray = Array.from(elements);
+    const elementsArray = Array.from(elements)
 
     // Loop through each element and remove the 'secondary' class
-    elementsArray.forEach(element => {
-      element.classList.remove('secondary');
-    });
+    elementsArray.forEach((element) => {
+      element.classList.remove('secondary')
+    })
   }
 
   useEffect(() => {
@@ -131,7 +129,7 @@ const Sidebar = ({ onAddressChange, states }) => {
 
   const handlePlaceSelect = async () => {
     const place = autocompleteRef.current.getPlace()
-    removeSecondary();
+    removeSecondary()
     if (place && place.geometry) {
       const location = place.geometry.location
       const lat = location.lat()
@@ -157,7 +155,14 @@ const Sidebar = ({ onAddressChange, states }) => {
       // Example of usage:
       const _battery = battery === 1 ? true : false
       const energyPrize = 5
-      const totalConsumption = calculateTotalConsumption({ people: people, ev: ev, sauna: sauna, pool: pool, houseSize: house, hotTub: hotTub })
+      const totalConsumption = calculateTotalConsumption({
+        people: people,
+        ev: ev,
+        sauna: sauna,
+        pool: pool,
+        houseSize: house,
+        hotTub: hotTub
+      })
       const { currentMonthlyPayment, totalCostWithoutChange } = getCurrentMonthlyPaymentAndTotalCostWithoutChange(
         energyPrize,
         totalConsumption
@@ -166,8 +171,6 @@ const Sidebar = ({ onAddressChange, states }) => {
       const { kwpSolar, kwhBattery, installationCost } = getInstallation(panelCount, _battery)
       const totalCostAfterSolar = getTotalCostAfterSolar(yearlyEnergyDcKwh, energyPrize, totalConsumption)
       const roi = getROI(installationCost, totalCostAfterSolar / 12 / 30, currentMonthlyPayment)
-
-
 
       console.log({
         totalConsumption,
@@ -182,19 +185,18 @@ const Sidebar = ({ onAddressChange, states }) => {
         roi
       })
 
-      setExpectedProduced(yearlyEnergyDcKwh)
+      setExpectedProduced(yearlyEnergyDcKwh.toFixed(2))
       setExpectedConsumed(totalConsumption)
-      setROI(roi)
+      setROI(roi.toFixed(2))
       setMaxSolarPanels(panelCount)
-      setkwhBattery(kwhBattery);
-
+      setkwhBattery(kwhBattery)
     }
   }
 
   return (
     <>
       <div className='SidebarContainer'>
-        <div className='SidebarItem' style={{paddingBottom: "25px"}}>
+        <div className='SidebarItem' style={{ paddingBottom: '25px' }}>
           <h2>Address</h2>
           <Autocomplete onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)} onPlaceChanged={handlePlaceSelect}>
             <input
@@ -210,28 +212,42 @@ const Sidebar = ({ onAddressChange, states }) => {
           <h2>Household Information</h2>
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={houseImage}  style={{ marginLeft: '-2px' }}></img>
+              <img className='item-svg' src={houseImage} style={{ marginLeft: '-2px' }}></img>
               <div className='sideBar-content-item'>House Size</div>
             </div>
-            <select defaultValue="medium" onChange={(e) => {setHouse(e.target.value.toUpperCase())}}>
-              <option value="small">Small (100 sqm)</option>
-              <option value="medium">Medium (150 sqm)</option>
-              <option value="large">Large (250 sqm)</option>
-            </select>          
-      </div>
+            <select
+              defaultValue='medium'
+              onChange={(e) => {
+                setHouse(e.target.value.toUpperCase())
+              }}
+            >
+              <option value='small'>Small (100 sqm)</option>
+              <option value='medium'>Medium (150 sqm)</option>
+              <option value='large'>Large (250 sqm)</option>
+            </select>
+          </div>
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={batteryImage}></img>
               <div className='meter-container sideBar-content-item'>Energy Price</div>
             </div>
-            <input className='household-info' type="number" name="energyPrize" id="energyPrize" onChange={(e) => {setenergyPrize(e.target.value)}} defaultValue={energyPrize}/>
+            <input
+              className='household-info'
+              type='number'
+              name='energyPrize'
+              id='energyPrize'
+              onChange={(e) => {
+                setenergyPrize(e.target.value)
+              }}
+              defaultValue={energyPrize}
+            />
           </div>
         </div>
         <div className='SidebarItem secondary'>
           <h2>General Information</h2>
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={sunImage}  style={{ marginLeft: '-2px' }}></img>
+              <img className='item-svg' src={sunImage} style={{ marginLeft: '-2px' }}></img>
               <div className='sideBar-content-item'>Sunshine hours/year:</div>
             </div>
             <div>{sunshineHours}</div>
@@ -239,7 +255,9 @@ const Sidebar = ({ onAddressChange, states }) => {
           <div className='item-container'>
             <div className='item-label-container'>
               <img className='item-svg' src={areaImage}></img>
-              <div className='meter-container sideBar-content-item'>Area meters<span className='meter-square'>2&nbsp;</span></div>
+              <div className='meter-container sideBar-content-item'>
+                Area meters<span className='meter-square'>2&nbsp;</span>
+              </div>
             </div>
             <div>{maxArrayAreaMeters2}</div>
           </div>
@@ -255,14 +273,14 @@ const Sidebar = ({ onAddressChange, states }) => {
           <h2>Expected</h2>
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={plusImage} style={{width: "20px"}}></img>
+              <img className='item-svg' src={plusImage} style={{ width: '20px' }}></img>
               <div className='meter-container sideBar-content-item'>Produced</div>
             </div>
             <div>{expectedProduced}</div>
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={minusImage} style={{width: "20px"}}></img>
+              <img className='item-svg' src={minusImage} style={{ width: '20px' }}></img>
               <div className='meter-container sideBar-content-item'>Consumed</div>
             </div>
             <div>{expectedConsumed}</div>
@@ -279,7 +297,7 @@ const Sidebar = ({ onAddressChange, states }) => {
           </div>
           <div className='item-container'>
             <div className='item-label-container'>
-              <img className='item-svg' src={costImage} ></img>
+              <img className='item-svg' src={costImage}></img>
               <div className='meter-container sideBar-content-item'>Cost</div>
             </div>
             <div>{expectedCost}</div>
@@ -302,96 +320,104 @@ Sidebar.propTypes = {
 }
 
 const Card = ({ title, description, inputType, val, src, setter }) => {
-
   return (
-    <div className="card">
+    <div className='card'>
       <div className='card-title-container'>
-        <img src={src} className='card-image' alt="Card image" />
-        <h2 className="card-title">{title}</h2>
+        <img src={src} className='card-image' alt='Card image' />
+        <h2 className='card-title'>{title}</h2>
       </div>
-      <p className="card-description">{description}</p>
-      <div className="card-footer">
-        {inputType === "number" ? (<input onChange={(e) => {setter(e.target.value)}} value={val} type="number" id="numberInput" name="numberInput" />) : <></>}
-        {inputType == "checkbox" ? <input onChange={(e) => {setter(e.target.checked ? 1 : 0)}} checked={val === 1 ? true : false} type="checkbox" id="checkboxInput" name="checkboxInput" /> : <></>}
+      <p className='card-description'>{description}</p>
+      <div className='card-footer'>
+        {inputType === 'number' ? (
+          <input
+            onChange={(e) => {
+              setter(e.target.value)
+            }}
+            value={val}
+            type='number'
+            id='numberInput'
+            name='numberInput'
+          />
+        ) : (
+          <></>
+        )}
+        {inputType == 'checkbox' ? (
+          <input
+            onChange={(e) => {
+              setter(e.target.checked ? 1 : 0)
+            }}
+            checked={val === 1 ? true : false}
+            type='checkbox'
+            id='checkboxInput'
+            name='checkboxInput'
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const ParamSection = (states) => {
-  const {
-    battery,
-    setBattery,
-    ev,
-    setEV,
-    ac,
-    setAC,
-    hotTub,
-    setHotTub,
-    pool,
-    setPool,
-    people,
-    setPeople
-  } = states.states;
+  const { battery, setBattery, ev, setEV, ac, setAC, hotTub, setHotTub, pool, setPool, people, setPeople } = states.states
 
   return (
-  <section className='param-section secondary'>
-    <div className="warning-container">
-      <p className="warning-text">
-        Please provide the following information for a more accurate calculation
-      </p>
-    </div>
-    <div className='card-container'>
-      <Card 
-          title="People"
-          description="How many people live in your household?"
-          inputType="number"
+    <section className='param-section secondary'>
+      <div className='warning-container'>
+        <p className='warning-text'>Please provide the following information for a more accurate calculation</p>
+      </div>
+      <div className='card-container'>
+        <Card
+          title='People'
+          description='How many people live in your household?'
+          inputType='number'
           src={peopleImage}
           val={people}
           setter={setPeople}
         />
-      <Card 
-          title="EV Car"
-          description="How many electric vehicles do you have in your household?"
-          inputType = "number"  // Change to false for radio button
+        <Card
+          title='EV Car'
+          description='How many electric vehicles do you have in your household?'
+          inputType='number' // Change to false for radio button
           src={carImage}
           val={ev}
           setter={setEV}
         />
-        <Card 
-          title="Battery Storage"
-          description="Do you want battery storage installed at your house?"
-          inputType = "checkbox"  // Change to false for radio button
+        <Card
+          title='Battery Storage'
+          description='Do you want battery storage installed at your house?'
+          inputType='checkbox' // Change to false for radio button
           src={batteryImage}
           val={battery}
           setter={setBattery}
         />
-      <Card 
-          title="Swimming Pool"
-          description="Do you have a swimming pool at your house?"
-          inputType = "checkbox"  // Change to false for radio button
+        <Card
+          title='Swimming Pool'
+          description='Do you have a swimming pool at your house?'
+          inputType='checkbox' // Change to false for radio button
           src={poolImage}
           val={pool}
           setter={setPool}
         />
-        <Card 
-          title="Hot Tub"
-          description="Do you have a hot tub at your house?"
-          inputType = "checkbox"  // Change to false for radio button
+        <Card
+          title='Hot Tub'
+          description='Do you have a hot tub at your house?'
+          inputType='checkbox' // Change to false for radio button
           src={hotTubImage}
           val={hotTub}
           setter={setHotTub}
         />
-        <Card 
-          title="AC"
-          description="Do you have air conditioning at your house?"
-          inputType = "checkbox"  // Change to false for radio button
+        <Card
+          title='AC'
+          description='Do you have air conditioning at your house?'
+          inputType='checkbox' // Change to false for radio button
           src={airConditionerImage}
           val={ac}
           setter={setAC}
         />
-    </div>
-  </section>
+      </div>
+    </section>
   )
 }
 
@@ -404,14 +430,14 @@ const App = () => {
   }
 
   const [address, setAddress] = useState('')
-  const [expectedProduced, setExpectedProduced] = useState("-")
-  const [expectedConsumed, setExpectedConsumed] = useState("-")
-  const [expectedCost, setExpectedCost] = useState("-")
-  const [savings, setSavings] = useState("-")
-  const [maxSolarPanels, setMaxSolarPanels] = useState("-")
-  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2 ] = useState("-")
-  const [ROI, setROI] = useState("-")
-  const [sunshineHours, setSunshineHours] = useState("-")
+  const [expectedProduced, setExpectedProduced] = useState('-')
+  const [expectedConsumed, setExpectedConsumed] = useState('-')
+  const [expectedCost, setExpectedCost] = useState('-')
+  const [savings, setSavings] = useState('-')
+  const [maxSolarPanels, setMaxSolarPanels] = useState('-')
+  const [maxArrayAreaMeters2, setMaxArrayAreaMeters2] = useState('-')
+  const [ROI, setROI] = useState('-')
+  const [sunshineHours, setSunshineHours] = useState('-')
   const [battery, setBattery] = useState(0)
   const [house, setHouse] = useState(HouseSize.MEDIUM)
   const [energyPrize, setenergyPrize] = useState(5)
@@ -464,16 +490,16 @@ const App = () => {
     heating,
     setHeating,
     people,
-    setPeople,
-  };
+    setPeople
+  }
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
       <div className='container'>
-        <MapComponent apiKey={apiKey} center={center} states={states}/>
+        <MapComponent apiKey={apiKey} center={center} states={states} />
         <Sidebar onAddressChange={handleAddressChange} states={states} />
       </div>
-      <ParamSection states={states}/>
+      <ParamSection states={states} />
     </LoadScript>
   )
 }
