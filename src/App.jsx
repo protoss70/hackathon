@@ -188,7 +188,7 @@ const Sidebar = ({ onAddressChange, states }) => {
 
       setExpectedProduced(yearlyEnergyDcKwh.toFixed(2))
       setExpectedConsumed(totalConsumption)
-      setROI(parseInt(roi).toFixed(2))
+      setROI(roi)
       setMaxSolarPanels(panelCount)
       setkwhBattery(kwhBattery.toFixed(2))
       setExpectedCost(installationCost.toFixed(2))
@@ -388,9 +388,6 @@ const ParamSection = (states) => {
 
   return (
     <section className='param-section secondary'>
-      <div className='warning-container'>
-        <p className='warning-text'>Please provide the following information for a more accurate calculation</p>
-      </div>
       <div className='card-container'>
         <Card
           title='People'

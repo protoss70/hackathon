@@ -13,16 +13,16 @@
 
 /* Sidebar styles */
 .SidebarContainer {
-    width: calc(30% - 20px);
+    width: calc(30%);
     float: left;
     height: 900px;
     display: flex;
     justify-content: start;
-    align-items: start;
+    align-items: center;
     flex-direction: column;
-    padding-left: 20px;
     padding-top: 10px;
-    background-color: rgb(211, 211, 211);
+    background-color: #9a9a9a;
+    
 }
 
 .secondary{
@@ -45,7 +45,6 @@
 }
 
 .container{
-    margin-top: 20px;
     height: 930px;
 }
 
